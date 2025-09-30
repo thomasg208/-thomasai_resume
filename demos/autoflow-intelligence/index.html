@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoFlow Intelligence - Intelligent Process Automation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            background: linear-gradient(135deg, #ff6b35, #f7931e, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #8892b0;
+            font-size: 1.2rem;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .panel h3 {
+            color: #ff6b35;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .workflow-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 3px solid #ff6b35;
+        }
+
+        .workflow-status {
+            font-size: 0.9rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .status-running {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .status-optimizing {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        .status-complete {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .metric {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .metric-label {
+            color: #8892b0;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .process-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .process-step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .process-step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ff6b35;
+            font-size: 1.5rem;
+        }
+
+        .step-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 1.5rem;
+        }
+
+        .step-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .step-desc {
+            color: #8892b0;
+            font-size: 0.8rem;
+        }
+
+        .log-output {
+            background: #0d1421;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .log-entry {
+            margin-bottom: 8px;
+            display: flex;
+        }
+
+        .log-time {
+            color: #8892b0;
+            margin-right: 10px;
+            min-width: 80px;
+        }
+
+        .log-success {
+            color: #22c55e;
+        }
+
+        .log-warning {
+            color: #fbbf24;
+        }
+
+        .log-info {
+            color: #3b82f6;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .process-flow {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .process-step:not(:last-child)::after {
+                content: '↓';
+                right: auto;
+                bottom: -10px;
+                top: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="logo">AutoFlow Intelligence</h1>
+            <p class="subtitle">Intelligent Process Automation Platform</p>
+        </div>
+
+        <div class="dashboard">
+            <div class="panel">
+                <h3>🔄 Active Workflows</h3>
+                <div class="workflow-item">
+                    <div>
+                        <strong>Customer Onboarding</strong>
+                        <div class="workflow-status status-running">RUNNING</div>
+                    </div>
+                </div>
+                <div class="workflow-item">
+                    <div>
+                        <strong>Invoice Processing</strong>
+                        <div class="workflow-status status-optimizing">OPTIMIZING</div>
+                    </div>
+                </div>
+                <div class="workflow-item">
+                    <div>
+                        <strong>Data Migration</strong>
+                        <div class="workflow-status status-complete">COMPLETE</div>
+                    </div>
+                </div>
+                <div class="workflow-item">
+                    <div>
+                        <strong>Report Generation</strong>
+                        <div class="workflow-status status-running">RUNNING</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>📊 Performance Metrics</h3>
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <div class="metric-value">70%</div>
+                        <div class="metric-label">Cost Reduction</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">99.99%</div>
+                        <div class="metric-label">Uptime</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">$2.3M</div>
+                        <div class="metric-label">Annual Savings</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">156</div>
+                        <div class="metric-label">Processes Automated</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <h3>🎛️ Workflow Controls</h3>
+            <div class="process-flow">
+                <div class="process-step">
+                    <div class="step-icon">🔍</div>
+                    <div class="step-title">Analyze</div>
+                    <div class="step-desc">Process Mining</div>
+                </div>
+                <div class="process-step">
+                    <div class="step-icon">🤖</div>
+                    <div class="step-title">Automate</div>
+                    <div class="step-desc">AI Orchestration</div>
+                </div>
+                <div class="process-step">
+                    <div class="step-icon">📈</div>
+                    <div class="step-title">Optimize</div>
+                    <div class="step-desc">Continuous Learning</div>
+                </div>
+                <div class="process-step">
+                    <div class="step-icon">🎯</div>
+                    <div class="step-title">Scale</div>
+                    <div class="step-desc">Predictive Scaling</div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="startWorkflow()">🚀 Deploy New Workflow</button>
+                <button class="btn btn-secondary" onclick="optimizeAll()">⚡ Optimize All</button>
+                <button class="btn btn-secondary" onclick="generateReport()">📊 Generate Report</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h3>📋 System Logs</h3>
+            <div class="log-output" id="logOutput">
+                <div class="log-entry">
+                    <span class="log-time">[15:42:18]</span>
+                    <span class="log-success">✓ Customer onboarding workflow optimized - 23% faster processing</span>
+                </div>
+                <div class="log-entry">
+                    <span class="log-time">[15:41:55]</span>
+                    <span class="log-info">ℹ AI model deployed for invoice processing automation</span>
+                </div>
+                <div class="log-entry">
+                    <span class="log-time">[15:41:12]</span>
+                    <span class="log-success">✓ Predictive scaling activated - added 3 nodes automatically</span>
+                </div>
+                <div class="log-entry">
+                    <span class="log-time">[15:40:33]</span>
+                    <span class="log-warning">⚠ High CPU usage detected on workflow engine - auto-optimizing</span>
+                </div>
+                <div class="log-entry">
+                    <span class="log-time">[15:39:47]</span>
+                    <span class="log-success">✓ Data migration workflow completed - 1.2M records processed</span>
+                </div>
+                <div class="log-entry">
+                    <span class="log-time">[15:38:21]</span>
+                    <span class="log-info">ℹ Process mining analysis started for quarterly reports</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function addLogEntry(message, type = 'info') {
+            const logOutput = document.getElementById('logOutput');
+            const time = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            
+            const icon = type === 'success' ? '✓' : type === 'warning' ? '⚠' : 'ℹ';
+            
+            entry.innerHTML = `
+                <span class="log-time">[${time}]</span>
+                <span class="log-${type}">${icon} ${message}</span>
+            `;
+            
+            logOutput.insertBefore(entry, logOutput.firstChild);
+            
+            if (logOutput.children.length > 10) {
+                logOutput.removeChild(logOutput.lastChild);
+            }
+        }
+
+        function startWorkflow() {
+            addLogEntry('New workflow deployment initiated...', 'info');
+            setTimeout(() => {
+                addLogEntry('Workflow deployed successfully - AI orchestration active', 'success');
+                updateMetrics();
+            }, 2000);
+        }
+
+        function optimizeAll() {
+            addLogEntry('Global optimization process started...', 'info');
+            setTimeout(() => {
+                addLogEntry('All workflows optimized - 15% performance improvement', 'success');
+                updateMetrics();
+            }, 3000);
+        }
+
+        function generateReport() {
+            addLogEntry('Generating comprehensive performance report...', 'info');
+            setTimeout(() => {
+                addLogEntry('Performance report generated - efficiency gains documented', 'success');
+            }, 1500);
+        }
+
+        function updateMetrics() {
+            const metrics = document.querySelectorAll('.metric-value');
+            metrics.forEach(metric => {
+                metric.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    metric.style.transform = 'scale(1)';
+                }, 300);
+            });
+        }
+
+        // Simulate live updates
+        setInterval(() => {
+            const messages = [
+                'Workflow execution completed - 99.2% success rate',
+                'AI model retrained with new data patterns',
+                'Predictive scaling prevented bottleneck',
+                'Process optimization reduced latency by 12ms',
+                'Auto-healing resolved minor service disruption'
+            ];
+            
+            const types = ['success', 'info', 'success', 'success', 'warning'];
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            
+            addLogEntry(messages[randomIndex], types[randomIndex]);
+        }, 8000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroVision Pro - Advanced Computer Vision AI Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dark-base': '#0a0a0a',
+                        'dark-surface': '#1a1a2e',
+                        'neon-blue': '#00d4ff',
+                        'neon-purple': '#8b5cf6'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        .demo-card {
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.6); }
+        }
+        .processing {
+            animation: pulse-glow 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-dark-base text-white min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg py-6">
+        <div class="max-w-6xl mx-auto px-6 flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold">NeuroVision Pro</h1>
+                <p class="text-blue-100">Advanced Computer Vision AI</p>
+            </div>
+            <a href="../../index.html#marketplace" class="bg-white/20 hover:bg-white/30 px-6 py-2 rounded-lg transition-all duration-300">
+                ← Back to Marketplace
+            </a>
+        </div>
+    </header>
+
+    <!-- Demo Content -->
+    <main class="max-w-6xl mx-auto px-6 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Upload Section -->
+            <div class="demo-card bg-dark-surface/80 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-6 text-neon-blue">Real-time Object Detection</h2>
+                
+                <div class="border-2 border-dashed border-gray-500 rounded-xl p-8 text-center mb-6" id="dropZone">
+                    <div id="uploadArea">
+                        <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <p class="text-lg mb-2">Drop an image here or click to upload</p>
+                        <p class="text-sm text-gray-400">PNG, JPG up to 10MB</p>
+                        <input type="file" id="fileInput" accept="image/*" class="hidden">
+                        <button onclick="document.getElementById('fileInput').click()" class="mt-4 bg-neon-blue hover:bg-blue-500 px-6 py-2 rounded-lg transition-colors">
+                            Choose Image
+                        </button>
+                    </div>
+                    
+                    <div id="imagePreview" class="hidden">
+                        <img id="previewImg" class="max-w-full max-h-64 mx-auto rounded-lg mb-4">
+                        <button onclick="processImage()" id="processBtn" class="bg-neon-purple hover:bg-purple-500 px-6 py-3 rounded-lg font-semibold transition-colors">
+                            🧠 Analyze with NeuroVision
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Demo Images -->
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="cursor-pointer" onclick="loadSampleImage('https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=300&h=200&fit=crop')">
+                        <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=300&h=200&fit=crop" class="w-full h-20 object-cover rounded-lg border-2 border-transparent hover:border-neon-blue transition-colors">
+                        <p class="text-xs text-center mt-1">Dog</p>
+                    </div>
+                    <div class="cursor-pointer" onclick="loadSampleImage('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=300&h=200&fit=crop')">
+                        <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=300&h=200&fit=crop" class="w-full h-20 object-cover rounded-lg border-2 border-transparent hover:border-neon-blue transition-colors">
+                        <p class="text-xs text-center mt-1">Car</p>
+                    </div>
+                    <div class="cursor-pointer" onclick="loadSampleImage('https://images.unsplash.com/photo-1567306301408-9b74779a11af?w=300&h=200&fit=crop')">
+                        <img src="https://images.unsplash.com/photo-1567306301408-9b74779a11af?w=300&h=200&fit=crop" class="w-full h-20 object-cover rounded-lg border-2 border-transparent hover:border-neon-blue transition-colors">
+                        <p class="text-xs text-center mt-1">Tomato</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="demo-card bg-dark-surface/80 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-6 text-neon-purple">Detection Results</h2>
+                
+                <div id="resultsArea" class="text-center text-gray-400">
+                    <svg class="mx-auto h-16 w-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 00-2-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <p>Upload an image to see AI detection results</p>
+                </div>
+
+                <div id="loadingArea" class="hidden text-center">
+                    <div class="processing bg-neon-blue/20 rounded-lg p-6 mb-4">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-neon-blue mx-auto mb-2"></div>
+                        <p class="text-neon-blue font-semibold">Processing with Neural Network...</p>
+                        <p class="text-sm text-gray-400">Analyzing 500+ object classes</p>
+                    </div>
+                </div>
+
+                <div id="detectionResults" class="hidden">
+                    <!-- Results will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="demo-card bg-dark-surface/80 rounded-xl p-6 text-center">
+                <div class="text-3xl font-bold text-green-400">99.8%</div>
+                <div class="text-sm text-gray-400">Accuracy</div>
+            </div>
+            <div class="demo-card bg-dark-surface/80 rounded-xl p-6 text-center">
+                <div class="text-3xl font-bold text-blue-400">120fps</div>
+                <div class="text-sm text-gray-400">Processing Speed</div>
+            </div>
+            <div class="demo-card bg-dark-surface/80 rounded-xl p-6 text-center">
+                <div class="text-3xl font-bold text-purple-400">23MB</div>
+                <div class="text-sm text-gray-400">Model Size</div>
+            </div>
+            <div class="demo-card bg-dark-surface/80 rounded-xl p-6 text-center">
+                <div class="text-3xl font-bold text-cyan-400">500+</div>
+                <div class="text-sm text-gray-400">Object Classes</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        const resultsArea = document.getElementById('resultsArea');
+        const loadingArea = document.getElementById('loadingArea');
+        const detectionResults = document.getElementById('detectionResults');
+
+        fileInput.addEventListener('change', handleFileSelect);
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    uploadArea.classList.add('hidden');
+                    imagePreview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function loadSampleImage(url) {
+            previewImg.src = url;
+            uploadArea.classList.add('hidden');
+            imagePreview.classList.remove('hidden');
+        }
+
+        function processImage() {
+            resultsArea.classList.add('hidden');
+            loadingArea.classList.remove('hidden');
+            detectionResults.classList.add('hidden');
+
+            // Simulate AI processing
+            setTimeout(() => {
+                loadingArea.classList.add('hidden');
+                showResults();
+            }, 3000);
+        }
+
+        function showResults() {
+            const sampleResults = [
+                { object: 'Dog', confidence: '98.7%', bbox: '[x:45, y:120, w:230, h:180]' },
+                { object: 'Person', confidence: '94.3%', bbox: '[x:180, y:50, w:120, h:280]' },
+                { object: 'Car', confidence: '89.1%', bbox: '[x:300, y:200, w:180, h:120]' }
+            ];
+
+            detectionResults.innerHTML = `
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-neon-blue mb-4">Detected Objects:</h3>
+                    ${sampleResults.map(result => `
+                        <div class="bg-dark-base/50 rounded-lg p-4 border border-gray-600">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-white font-semibold">${result.object}</span>
+                                <span class="text-green-400 font-mono">${result.confidence}</span>
+                            </div>
+                            <div class="text-sm text-gray-400">
+                                Bounding Box: <span class="font-mono">${result.bbox}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                    <div class="mt-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                        <p class="text-green-400 font-semibold">✅ Analysis Complete</p>
+                        <p class="text-sm text-gray-400">Processed in 0.23 seconds with 99.8% accuracy</p>
+                    </div>
+                </div>
+            `;
+            detectionResults.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
