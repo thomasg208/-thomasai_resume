@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CreativeAI Studio - Multimodal Content Generation Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dark-base': '#0a0a0a',
+                        'dark-surface': '#1a1a2e',
+                        'neon-pink': '#ec4899',
+                        'neon-purple': '#8b5cf6'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+        }
+        .demo-card {
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .generated-image {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .generation-progress {
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-dark-base text-white min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg py-6">
+        <div class="max-w-6xl mx-auto px-6 flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold">CreativeAI Studio</h1>
+                <p class="text-pink-100">Multimodal Content Generation</p>
+            </div>
+            <a href="../../index.html#marketplace" class="bg-white/20 hover:bg-white/30 px-6 py-2 rounded-lg transition-all duration-300">
+                ← Back to Marketplace
+            </a>
+        </div>
+    </header>
+
+    <!-- Demo Content -->
+    <main class="max-w-6xl mx-auto px-6 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Generation Panel -->
+            <div class="space-y-6">
+                <div class="demo-card bg-dark-surface/80 rounded-2xl p-6">
+                    <h2 class="text-2xl font-bold mb-6 text-neon-pink">AI Content Generator</h2>
+                    
+                    <!-- Mode Selector -->
+                    <div class="flex space-x-2 mb-6">
+                        <button onclick="setMode('image')" id="imageBtn" class="mode-btn bg-neon-pink text-white px-4 py-2 rounded-lg font-semibold">
+                            🎨 Image
+                        </button>
+                        <button onclick="setMode('text')" id="textBtn" class="mode-btn bg-dark-surface border border-gray-600 px-4 py-2 rounded-lg">
+                            📝 Text
+                        </button>
+                        <button onclick="setMode('code')" id="codeBtn" class="mode-btn bg-dark-surface border border-gray-600 px-4 py-2 rounded-lg">
+                            💻 Code
+                        </button>
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-semibold mb-2">Prompt:</label>
+                        <textarea 
+                            id="promptInput" 
+                            placeholder="Describe what you want to create..."
+                            class="w-full h-24 bg-dark-base border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-pink resize-none"
+                        ></textarea>
+                    </div>
+
+                    <!-- Style Options (for image mode) -->
+                    <div id="styleOptions" class="mb-6">
+                        <label class="block text-sm font-semibold mb-2">Style:</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="setStyle('photorealistic')" class="style-btn bg-dark-base border border-gray-600 hover:border-neon-pink px-3 py-2 rounded text-sm transition-colors">
+                                📷 Photorealistic
+                            </button>
+                            <button onclick="setStyle('digital-art')" class="style-btn bg-dark-base border border-gray-600 hover:border-neon-pink px-3 py-2 rounded text-sm transition-colors">
+                                🎨 Digital Art
+                            </button>
+                            <button onclick="setStyle('anime')" class="style-btn bg-dark-base border border-gray-600 hover:border-neon-pink px-3 py-2 rounded text-sm transition-colors">
+                                🌸 Anime
+                            </button>
+                            <button onclick="setStyle('abstract')" class="style-btn bg-dark-base border border-gray-600 hover:border-neon-pink px-3 py-2 rounded text-sm transition-colors">
+                                🌀 Abstract
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Generate Button -->
+                    <button 
+                        onclick="generateContent()" 
+                        id="generateBtn"
+                        class="w-full bg-gradient-to-r from-neon-pink to-neon-purple hover:from-pink-600 hover:to-purple-600 px-6 py-3 rounded-lg font-bold text-lg transition-all duration-300 transform hover:scale-105"
+                    >
+                        ✨ Generate with AI
+                    </button>
+
+                    <!-- Progress Bar -->
+                    <div id="progressContainer" class="hidden mt-4">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span>Generating...</span>
+                            <span id="progressText">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div id="progressBar" class="generation-progress bg-gradient-to-r from-neon-pink to-neon-purple h-2 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Prompts -->
+                <div class="demo-card bg-dark-surface/80 rounded-2xl p-6">
+                    <h3 class="text-lg font-bold mb-4 text-neon-purple">Quick Start Examples</h3>
+                    <div class="space-y-2">
+                        <button onclick="useQuickPrompt('A futuristic cityscape with flying cars at sunset')" class="w-full text-left bg-dark-base hover:bg-gray-800 border border-gray-600 hover:border-neon-pink px-4 py-2 rounded transition-colors">
+                            🌆 Futuristic cityscape with flying cars
+                        </button>
+                        <button onclick="useQuickPrompt('A magical forest with glowing mushrooms and fairy lights')" class="w-full text-left bg-dark-base hover:bg-gray-800 border border-gray-600 hover:border-neon-pink px-4 py-2 rounded transition-colors">
+                            🧚‍♀️ Magical forest with glowing elements
+                        </button>
+                        <button onclick="useQuickPrompt('Write a Python class for a neural network')" class="w-full text-left bg-dark-base hover:bg-gray-800 border border-gray-600 hover:border-neon-pink px-4 py-2 rounded transition-colors">
+                            🐍 Python neural network class
+                        </button>
+                        <button onclick="useQuickPrompt('Create marketing copy for an AI startup')" class="w-full text-left bg-dark-base hover:bg-gray-800 border border-gray-600 hover:border-neon-pink px-4 py-2 rounded transition-colors">
+                            📈 AI startup marketing copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="demo-card bg-dark-surface/80 rounded-2xl p-6">
+                <h2 class="text-2xl font-bold mb-6 text-neon-purple">Generated Content</h2>
+                
+                <div id="resultsArea" class="text-center text-gray-400 h-80 flex items-center justify-center">
+                    <div>
+                        <svg class="mx-auto h-16 w-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.832 18.477 19.246 18 17.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                        <p>Enter a prompt and click generate to see AI magic happen</p>
+                    </div>
+                </div>
+
+                <div id="generatedContent" class="hidden">
+                    <!-- Generated content will appear here -->
+                </div>
+
+                <div id="generationStats" class="hidden mt-6 grid grid-cols-2 gap-4 text-sm">
+                    <div class="bg-dark-base/50 rounded-lg p-3 text-center">
+                        <div class="text-green-400 font-bold">2.3s</div>
+                        <div class="text-gray-400">Generation Time</div>
+                    </div>
+                    <div class="bg-dark-base/50 rounded-lg p-3 text-center">
+                        <div class="text-purple-400 font-bold">9.2/10</div>
+                        <div class="text-gray-400">Quality Score</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="demo-card bg-dark-surface/80 rounded-xl p-6 text-center">
+                <div class="text-3xl font-bold text-pink-400">2.3s</div>
+                <div class="text-sm text-gray-400">Generation Time</div>
+            </div>
+            <div class="demo-card bg-dark-surface/80 rounded-xl p-6 text-center">
+                <div class="text-3xl font-bold text-purple-400">9.2/10</div>
+                <div class="text-sm text-gray-400">Quality Score</div>
+            </div>
+            <div class="demo-card bg-dark-surface/80 rounded-xl p-6 text-center">
+                <div class="text-3xl font-bold text-blue-400">1000+</div>
+                <div class="text-sm text-gray-400">Style Variants</div>
+            </div>
+            <div class="demo-card bg-dark-surface/80 rounded-xl p-6 text-center">
+                <div class="text-3xl font-bold text-cyan-400">50+</div>
+                <div class="text-sm text-gray-400">Content Types</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentMode = 'image';
+        let currentStyle = 'photorealistic';
+
+        function setMode(mode) {
+            currentMode = mode;
+            
+            // Update button styles
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.className = 'mode-btn bg-dark-surface border border-gray-600 px-4 py-2 rounded-lg transition-colors';
+            });
+            document.getElementById(`${mode}Btn`).className = 'mode-btn bg-neon-pink text-white px-4 py-2 rounded-lg font-semibold';
+            
+            // Show/hide style options
+            const styleOptions = document.getElementById('styleOptions');
+            styleOptions.style.display = mode === 'image' ? 'block' : 'none';
+            
+            // Update placeholder
+            const placeholder = {
+                'image': 'Describe the image you want to create...',
+                'text': 'Describe the text content you need...',
+                'code': 'Describe the code you want to generate...'
+            };
+            document.getElementById('promptInput').placeholder = placeholder[mode];
+        }
+
+        function setStyle(style) {
+            currentStyle = style;
+            document.querySelectorAll('.style-btn').forEach(btn => {
+                btn.className = 'style-btn bg-dark-base border border-gray-600 hover:border-neon-pink px-3 py-2 rounded text-sm transition-colors';
+            });
+            event.target.className = 'style-btn bg-neon-pink border-neon-pink text-white px-3 py-2 rounded text-sm transition-colors';
+        }
+
+        function useQuickPrompt(prompt) {
+            document.getElementById('promptInput').value = prompt;
+            
+            // Auto-set mode based on prompt
+            if (prompt.includes('Python') || prompt.includes('code') || prompt.includes('class')) {
+                setMode('code');
+            } else if (prompt.includes('copy') || prompt.includes('marketing') || prompt.includes('write')) {
+                setMode('text');
+            } else {
+                setMode('image');
+            }
+        }
+
+        function generateContent() {
+            const prompt = document.getElementById('promptInput').value.trim();
+            if (!prompt) {
+                alert('Please enter a prompt!');
+                return;
+            }
+
+            // Hide results and show progress
+            document.getElementById('resultsArea').classList.add('hidden');
+            document.getElementById('generatedContent').classList.add('hidden');
+            document.getElementById('generationStats').classList.add('hidden');
+            document.getElementById('progressContainer').classList.remove('hidden');
+            
+            // Animate progress bar
+            let progress = 0;
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
+                
+                progressBar.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(showResults, 500);
+                }
+            }, 200);
+        }
+
+        function showResults() {
+            document.getElementById('progressContainer').classList.add('hidden');
+            document.getElementById('generatedContent').classList.remove('hidden');
+            document.getElementById('generationStats').classList.remove('hidden');
+            
+            const generatedContent = document.getElementById('generatedContent');
+            
+            if (currentMode === 'image') {
+                generatedContent.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="generated-image rounded-lg h-64 flex items-center justify-center text-white font-bold text-lg">
+                            🎨 Generated Image Preview
+                        </div>
+                        <div class="text-center">
+                            <p class="text-sm text-gray-400 mb-4">Style: ${currentStyle} | Resolution: 1024x1024</p>
+                            <div class="flex gap-2 justify-center">
+                                <button class="bg-neon-pink hover:bg-pink-600 px-4 py-2 rounded-lg text-sm transition-colors">
+                                    💾 Download
+                                </button>
+                                <button class="bg-neon-purple hover:bg-purple-600 px-4 py-2 rounded-lg text-sm transition-colors">
+                                    🔄 Generate Variant
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (currentMode === 'text') {
+                generatedContent.innerHTML = `
+                    <div class="bg-dark-base/50 rounded-lg p-4 border border-gray-600">
+                        <h3 class="text-lg font-bold text-neon-pink mb-3">Generated Marketing Copy</h3>
+                        <div class="space-y-3 text-sm">
+                            <p><strong>Headline:</strong> "Revolutionize Your Business with AI That Actually Works"</p>
+                            <p><strong>Subheading:</strong> Transform your operations with cutting-edge artificial intelligence solutions that deliver measurable results from day one.</p>
+                            <p><strong>Call to Action:</strong> "Start Your AI Transformation Today - See Results in 30 Days or Your Money Back"</p>
+                            <p><strong>Key Benefits:</strong></p>
+                            <ul class="list-disc list-inside text-gray-300 space-y-1">
+                                <li>Increase efficiency by up to 70%</li>
+                                <li>Reduce operational costs significantly</li>
+                                <li>Scale your business with intelligent automation</li>
+                                <li>Get 24/7 AI-powered customer support</li>
+                            </ul>
+                        </div>
+                        <div class="flex gap-2 mt-4">
+                            <button class="bg-neon-pink hover:bg-pink-600 px-4 py-2 rounded-lg text-sm transition-colors">
+                                📋 Copy Text
+                            </button>
+                            <button class="bg-neon-purple hover:bg-purple-600 px-4 py-2 rounded-lg text-sm transition-colors">
+                                🔄 Generate More
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else if (currentMode === 'code') {
+                generatedContent.innerHTML = `
+                    <div class="bg-dark-base/50 rounded-lg p-4 border border-gray-600">
+                        <h3 class="text-lg font-bold text-neon-purple mb-3">Generated Python Code</h3>
+                        <pre class="bg-gray-900 rounded p-4 text-sm font-mono overflow-x-auto"><code class="text-green-400">class NeuralNetwork:
+    def __init__(self, input_size, hidden_size, output_size):
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        self.output_size = output_size
+        
+        # Initialize weights and biases
+        self.W1 = np.random.randn(input_size, hidden_size) * 0.01
+        self.b1 = np.zeros((1, hidden_size))
+        self.W2 = np.random.randn(hidden_size, output_size) * 0.01
+        self.b2 = np.zeros((1, output_size))
+    
+    def forward(self, X):
+        # Forward propagation
+        self.z1 = np.dot(X, self.W1) + self.b1
+        self.a1 = self.sigmoid(self.z1)
+        self.z2 = np.dot(self.a1, self.W2) + self.b2
+        self.a2 = self.sigmoid(self.z2)
+        return self.a2
+    
+    def sigmoid(self, x):
+        return 1 / (1 + np.exp(-np.clip(x, -250, 250)))</code></pre>
+                        <div class="flex gap-2 mt-4">
+                            <button class="bg-neon-pink hover:bg-pink-600 px-4 py-2 rounded-lg text-sm transition-colors">
+                                📋 Copy Code
+                            </button>
+                            <button class="bg-neon-purple hover:bg-purple-600 px-4 py-2 rounded-lg text-sm transition-colors">
+                                💻 Run in IDE
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

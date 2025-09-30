@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoboMind Framework - Autonomous Robotics AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            background: linear-gradient(135deg, #f59e0b, #f97316, #ef4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #8892b0;
+            font-size: 1.2rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(249, 158, 11, 0.2);
+            border: 1px solid rgba(249, 158, 11, 0.3);
+            border-radius: 20px;
+            padding: 8px 16px;
+            margin: 20px 0;
+            font-size: 0.9rem;
+            color: #f59e0b;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .panel h3 {
+            color: #f59e0b;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .robot-sim {
+            height: 300px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 2px solid rgba(249, 158, 11, 0.3);
+        }
+
+        .robot {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            border-radius: 50%;
+            position: absolute;
+            transition: all 2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 0 20px rgba(249, 158, 11, 0.5);
+        }
+
+        .obstacle {
+            position: absolute;
+            background: rgba(239, 68, 68, 0.3);
+            border: 2px solid #ef4444;
+            border-radius: 5px;
+        }
+
+        .waypoint {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .path-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, #f59e0b, #22c55e);
+            transform-origin: left center;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(249, 158, 11, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .sensors-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .sensor {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .sensor-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sensor-label {
+            color: #8892b0;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        .mission-log {
+            background: #0d1421;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            height: 200px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            display: flex;
+        }
+
+        .log-time {
+            color: #8892b0;
+            margin-right: 8px;
+            min-width: 60px;
+        }
+
+        .log-success {
+            color: #22c55e;
+        }
+
+        .log-warning {
+            color: #f59e0b;
+        }
+
+        .log-info {
+            color: #3b82f6;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .slam-map {
+            height: 400px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(249, 158, 11, 0.3);
+        }
+
+        .map-grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .explored-area {
+            position: absolute;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 3px;
+        }
+
+        .robot-trail {
+            position: absolute;
+            width: 3px;
+            background: linear-gradient(45deg, #f59e0b, #ef4444);
+            border-radius: 2px;
+        }
+
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .metric {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .metric-label {
+            color: #8892b0;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        .decision-tree {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .decision-node {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid #f59e0b;
+            padding: 10px 15px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+        }
+
+        .decision-active {
+            background: rgba(249, 158, 11, 0.1);
+            border-left-color: #22c55e;
+            animation: activeDecision 1s ease-in-out;
+        }
+
+        @keyframes activeDecision {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(5px); }
+        }
+
+        .back-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            z-index: 1000;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(249, 158, 11, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .sensors-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .performance-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html#marketplace" class="back-link">← Back to Marketplace</a>
+    <div class="container">
+        <div class="header">
+            <h1 class="logo">RoboMind Framework</h1>
+            <p class="subtitle">Autonomous Robotics AI Control System</p>
+            <div class="status-badge">
+                🤖 Prototype Status - Advanced SLAM & RL Integration
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="panel">
+                <h3>🎮 Robot Control</h3>
+                <div class="robot-sim" id="robotSim">
+                    <div class="map-grid"></div>
+                    <div class="robot" id="robot">🤖</div>
+                    <!-- Obstacles and waypoints will be added dynamically -->
+                </div>
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="startExploration()">🗺️ Explore</button>
+                    <button class="btn btn-primary" onclick="setWaypoint()">📍 Set Goal</button>
+                    <button class="btn btn-secondary" onclick="pauseRobot()">⏸️ Pause</button>
+                    <button class="btn btn-secondary" onclick="resetRobot()">🔄 Reset</button>
+                </div>
+                
+                <div class="sensors-grid">
+                    <div class="sensor">
+                        <div class="sensor-value" id="lidarRange">4.2m</div>
+                        <div class="sensor-label">LiDAR Range</div>
+                    </div>
+                    <div class="sensor">
+                        <div class="sensor-value" id="batteryLevel">87%</div>
+                        <div class="sensor-label">Battery</div>
+                    </div>
+                    <div class="sensor">
+                        <div class="sensor-value" id="velocity">0.3m/s</div>
+                        <div class="sensor-label">Velocity</div>
+                    </div>
+                    <div class="sensor">
+                        <div class="sensor-value" id="confidence">94%</div>
+                        <div class="sensor-label">Confidence</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>🧠 AI Decision Making</h3>
+                <div class="decision-tree" id="decisionTree">
+                    <div class="decision-node">🔍 Scanning environment for obstacles</div>
+                    <div class="decision-node">📊 Processing sensor fusion data</div>
+                    <div class="decision-node">🎯 Calculating optimal path</div>
+                    <div class="decision-node">🚀 Executing movement command</div>
+                    <div class="decision-node">📍 Updating SLAM map</div>
+                </div>
+                
+                <h4 style="color: #f59e0b; margin: 20px 0 10px;">📋 Mission Log</h4>
+                <div class="mission-log" id="missionLog">
+                    <div class="log-entry">
+                        <span class="log-time">[16:42]</span>
+                        <span class="log-success">✓ SLAM mapping initialized</span>
+                    </div>
+                    <div class="log-entry">
+                        <span class="log-time">[16:42]</span>
+                        <span class="log-info">ℹ Reinforcement learning model loaded</span>
+                    </div>
+                    <div class="log-entry">
+                        <span class="log-time">[16:41]</span>
+                        <span class="log-success">✓ All sensors calibrated and online</span>
+                    </div>
+                    <div class="log-entry">
+                        <span class="log-time">[16:41]</span>
+                        <span class="log-info">ℹ Autonomous navigation ready</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel full-width">
+                <h3>🗺️ SLAM Mapping & Performance</h3>
+                <div class="slam-map" id="slamMap">
+                    <div class="map-grid"></div>
+                    <!-- Explored areas and robot trail will be added here -->
+                </div>
+                
+                <div class="performance-metrics">
+                    <div class="metric">
+                        <div class="metric-value" id="precision">98.5%</div>
+                        <div class="metric-label">Navigation Precision</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="latency">12ms</div>
+                        <div class="metric-label">Decision Latency</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="autonomy">24hrs</div>
+                        <div class="metric-label">Autonomous Runtime</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="mapAccuracy">96.8%</div>
+                        <div class="metric-label">Map Accuracy</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let robotPosition = { x: 50, y: 150 };
+        let isExploring = false;
+        let currentWaypoint = null;
+        let obstacles = [];
+        let exploredAreas = [];
+
+        function initializeEnvironment() {
+            const sim = document.getElementById('robotSim');
+            
+            // Add some obstacles
+            obstacles = [
+                { x: 120, y: 80, width: 60, height: 40 },
+                { x: 200, y: 180, width: 40, height: 60 },
+                { x: 300, y: 100, width: 50, height: 30 }
+            ];
+            
+            obstacles.forEach(obs => {
+                const obstacle = document.createElement('div');
+                obstacle.className = 'obstacle';
+                obstacle.style.left = `${obs.x}px`;
+                obstacle.style.top = `${obs.y}px`;
+                obstacle.style.width = `${obs.width}px`;
+                obstacle.style.height = `${obs.height}px`;
+                sim.appendChild(obstacle);
+            });
+        }
+
+        function addLogEntry(message, type = 'info') {
+            const log = document.getElementById('missionLog');
+            const time = new Date().toLocaleTimeString().slice(0, 5);
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            
+            const icon = type === 'success' ? '✓' : type === 'warning' ? '⚠' : 'ℹ';
+            
+            entry.innerHTML = `
+                <span class="log-time">[${time}]</span>
+                <span class="log-${type}">${icon} ${message}</span>
+            `;
+            
+            log.insertBefore(entry, log.firstChild);
+            
+            if (log.children.length > 8) {
+                log.removeChild(log.lastChild);
+            }
+        }
+
+        function updateSensors() {
+            const sensors = {
+                lidarRange: (3.5 + Math.random() * 1.5).toFixed(1) + 'm',
+                batteryLevel: Math.max(70, 100 - Math.random() * 30).toFixed(0) + '%',
+                velocity: (0.1 + Math.random() * 0.5).toFixed(1) + 'm/s',
+                confidence: (90 + Math.random() * 10).toFixed(0) + '%'
+            };
+            
+            Object.entries(sensors).forEach(([id, value]) => {
+                document.getElementById(id).textContent = value;
+            });
+        }
+
+        function animateDecisionTree() {
+            const nodes = document.querySelectorAll('.decision-node');
+            nodes.forEach(node => node.classList.remove('decision-active'));
+            
+            let index = 0;
+            const interval = setInterval(() => {
+                if (index < nodes.length) {
+                    nodes[index].classList.add('decision-active');
+                    setTimeout(() => {
+                        nodes[index].classList.remove('decision-active');
+                    }, 1000);
+                    index++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 600);
+        }
+
+        function moveRobot(targetX, targetY) {
+            const robot = document.getElementById('robot');
+            robot.style.left = `${targetX}px`;
+            robot.style.top = `${targetY}px`;
+            robotPosition = { x: targetX, y: targetY };
+            
+            // Add explored area
+            const slamMap = document.getElementById('slamMap');
+            const area = document.createElement('div');
+            area.className = 'explored-area';
+            area.style.left = `${targetX - 20}px`;
+            area.style.top = `${targetY - 20}px`;
+            area.style.width = '40px';
+            area.style.height = '40px';
+            slamMap.appendChild(area);
+        }
+
+        function startExploration() {
+            if (isExploring) return;
+            isExploring = true;
+            
+            addLogEntry('Exploration mission started', 'info');
+            animateDecisionTree();
+            
+            // Simulate autonomous exploration
+            const waypoints = [
+                { x: 150, y: 100 },
+                { x: 250, y: 50 },
+                { x: 350, y: 120 },
+                { x: 280, y: 220 },
+                { x: 100, y: 200 }
+            ];
+            
+            let waypointIndex = 0;
+            const exploreInterval = setInterval(() => {
+                if (waypointIndex < waypoints.length) {
+                    const waypoint = waypoints[waypointIndex];
+                    moveRobot(waypoint.x, waypoint.y);
+                    addLogEntry(`Reached waypoint ${waypointIndex + 1}`, 'success');
+                    updateSensors();
+                    waypointIndex++;
+                } else {
+                    clearInterval(exploreInterval);
+                    isExploring = false;
+                    addLogEntry('Exploration mission completed', 'success');
+                }
+            }, 3000);
+        }
+
+        function setWaypoint() {
+            const sim = document.getElementById('robotSim');
+            
+            // Remove existing waypoint
+            const existingWaypoint = sim.querySelector('.waypoint');
+            if (existingWaypoint) {
+                existingWaypoint.remove();
+            }
+            
+            // Add new waypoint at random position
+            const waypoint = document.createElement('div');
+            waypoint.className = 'waypoint';
+            const x = 100 + Math.random() * 200;
+            const y = 50 + Math.random() * 150;
+            waypoint.style.left = `${x}px`;
+            waypoint.style.top = `${y}px`;
+            sim.appendChild(waypoint);
+            
+            addLogEntry(`New waypoint set at (${x.toFixed(0)}, ${y.toFixed(0)})`, 'info');
+            
+            // Move robot to waypoint
+            setTimeout(() => {
+                moveRobot(x, y);
+                addLogEntry('Waypoint reached successfully', 'success');
+                animateDecisionTree();
+                updateSensors();
+            }, 2000);
+        }
+
+        function pauseRobot() {
+            isExploring = false;
+            addLogEntry('Robot paused - maintaining position', 'warning');
+        }
+
+        function resetRobot() {
+            isExploring = false;
+            robotPosition = { x: 50, y: 150 };
+            const robot = document.getElementById('robot');
+            robot.style.left = '50px';
+            robot.style.top = '150px';
+            
+            // Clear explored areas
+            const areas = document.querySelectorAll('.explored-area');
+            areas.forEach(area => area.remove());
+            
+            // Clear waypoints
+            const waypoints = document.querySelectorAll('.waypoint');
+            waypoints.forEach(wp => wp.remove());
+            
+            addLogEntry('Robot reset to home position', 'info');
+            updateSensors();
+        }
+
+        // Initialize the demo
+        initializeEnvironment();
+        updateSensors();
+
+        // Periodic updates
+        setInterval(updateSensors, 5000);
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                animateDecisionTree();
+            }
+        }, 10000);
+    </script>
+</body>
+</html>
