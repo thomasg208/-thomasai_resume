@@ -62,14 +62,14 @@ const ContactModule = () => {
       name: 'LINKEDIN TACTICAL',
       value: '/in/thomas-gaye',
       icon: '💼',
-      action: () => window.open('https://linkedin.com/in/thomas-gaye', '_blank'),
+      action: () => window.open('https://www.linkedin.com/in/thomas-gaye/', '_blank'),
       status: 'OPERATIONAL'
     },
     {
       name: 'GITHUB ARSENAL',
-      value: '/thomas-gaye',
+      value: '/thomasg208',
       icon: '⚡',
-      action: () => window.open('https://github.com/thomas-gaye', '_blank'),
+      action: () => window.open('https://github.com/thomasg208', '_blank'),
       status: 'DEPLOYED'
     },
     {
@@ -388,20 +388,36 @@ const ContactModule = () => {
               </div>
             </div>
 
-            {/* Location */}
+            {/* Tactical Availability */}
             <div className="card-tactical rounded-xl p-8">
-              <h3 className="font-tactical font-bold text-xl text-light-text-primary dark:text-dark-text-primary mb-4">
-                OPERATIONAL BASE
+              <h3 className="font-tactical font-bold text-xl text-light-text-primary dark:text-dark-text-primary mb-6">
+                TACTICAL AVAILABILITY
               </h3>
-              <div className="flex items-center space-x-3">
-                <div className="text-2xl">🌍</div>
-                <div>
-                  <p className="font-tactical font-semibold text-light-text-primary dark:text-dark-text-primary">
-                    GLOBAL DEPLOYMENT
-                  </p>
-                  <p className="text-sm font-mono text-light-text-secondary dark:text-dark-text-secondary">
-                    Remote Operations • Worldwide Coverage
-                  </p>
+              <div className="space-y-3 mb-6">
+                {[
+                  '✓ Contract Engagements',
+                  '✓ Full-Time Opportunities', 
+                  '✓ Strategic Collaborations',
+                  '✓ Partnership Models'
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center space-x-3 text-light-text-secondary dark:text-dark-text-secondary">
+                    <span className="text-green-400 font-bold">{item.split(' ')[0]}</span>
+                    <span className="font-mono text-sm">{item.substring(2)}</span>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="pt-4 border-t border-light-border dark:border-dark-border">
+                <div className="flex items-center space-x-3">
+                  <div className="text-2xl">🌍</div>
+                  <div>
+                    <p className="font-tactical font-semibold text-light-text-accent dark:text-dark-neon-blue">
+                      Florida-based, Globally Deployable
+                    </p>
+                    <p className="text-xs font-mono text-light-text-secondary dark:text-dark-text-secondary">
+                      Remote-ready • Worldwide operations
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

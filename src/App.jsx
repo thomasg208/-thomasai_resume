@@ -9,6 +9,8 @@ import ExperienceCarousel from './components/ExperienceCarousel';
 import CaseStudyArsenal from './components/CaseStudyArsenal';
 import AIMarketplace from './components/AIMarketplace';
 import ContactModule from './components/ContactModule';
+import StickyEngagementCTA from './components/StickyEngagementCTA';
+import VeritasFooter from './components/VeritasFooter';
 import './styles/globals.css';
 
 function App() {
@@ -25,6 +27,8 @@ function App() {
             <AIMarketplace />
             <ContactModule />
           </main>
+          <VeritasFooter />
+          <StickyEngagementCTA />
         </div>
       </Router>
     </ThemeProvider>

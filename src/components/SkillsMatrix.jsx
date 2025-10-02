@@ -6,81 +6,59 @@ const SkillsMatrix = () => {
   const { isDark } = useTheme();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, threshold: 0.3 });
-  const [activeCategory, setActiveCategory] = useState('AI');
 
-  const skillCategories = {
-    AI: {
-      title: 'AI WARFARE SYSTEMS',
-      icon: '🧠',
-      color: 'dark-neon-blue',
-      skills: [
-        { name: 'Superintelligent ML Systems', level: 95, description: 'Combat-ready TensorFlow, PyTorch, Tactical Scikit-learn' },
-        { name: 'Deep Warfare Networks', level: 90, description: 'Neural Warfare, CNNs, RNNs, Strategic Transformers' },
-        { name: 'Intelligence Processing', level: 88, description: 'BERT, GPT-4, Tactical NLP, NLTK Operations' },
-        { name: 'Battlefield Vision Systems', level: 85, description: 'OpenCV, YOLO Detection, Threat Classification' },
-        { name: 'MLOps Command Infrastructure', level: 82, description: 'Docker, Kubernetes, MLflow, Airflow Deployment' },
-        { name: 'Strategic Data Intelligence', level: 92, description: 'Pandas, NumPy, Combat Analytics, Seaborn' }
-      ]
+  const capabilities = [
+    {
+      category: 'Machine Learning',
+      proficiency: 95,
+      tools: ['TensorFlow', 'PyTorch', 'Scikit-learn', 'XGBoost', 'Keras']
     },
-    FULLSTACK: {
-      title: 'DEFENSE INFRASTRUCTURE',
-      icon: '⚡',
-      color: 'dark-neon-purple',
-      skills: [
-        { name: 'Tactical React/Next.js', level: 95, description: 'Combat UI, Strategic Hooks, SSR Operations' },
-        { name: 'Node.js Command Systems', level: 90, description: 'Secure APIs, GraphQL Warfare, Microservice Fleet' },
-        { name: 'Python Defense Frameworks', level: 88, description: 'Django REST Ops, FastAPI Strike, Flask Tactical' },
-        { name: 'Database Warfare Systems', level: 85, description: 'PostgreSQL Fortress, MongoDB Intel, Redis Cache' },
-        { name: 'Cloud Combat Platforms', level: 87, description: 'AWS Command, GCP Operations, Azure Defense' },
-        { name: 'DevOps Battle Systems', level: 83, description: 'CI/CD Pipeline, Docker Fleet, Terraform Deploy' }
-      ]
+    {
+      category: 'Natural Language Processing',
+      proficiency: 92,
+      tools: ['GPT-4', 'BERT', 'Hugging Face', 'spaCy', 'NLTK']
     },
-    STRATEGY: {
-      title: 'STRATEGIC COMMAND',
-      icon: '🎯',
-      color: 'dark-neon-cyan',
-      skills: [
-        { name: 'Mission Command', level: 92, description: 'Agile Warfare, Scrum Ops, Strategic Leadership' },
-        { name: 'System Warfare Architecture', level: 89, description: 'Microservice Fleet, Zero-Failure Scalability' },
-        { name: 'Intelligence Documentation', level: 87, description: 'Classified Docs, API Warfare Specs, Tactical Briefs' },
-        { name: 'Strike Team Leadership', level: 85, description: 'Elite Mentoring, Combat Reviews, Strategic Command' },
-        { name: 'High-Value Target Relations', level: 90, description: 'Mission Requirements, Secure Comms, Precision Delivery' },
-        { name: 'Naval Combat Precision', level: 98, description: 'Zero-Tolerance Discipline, DoD Standards, Flawless Execution' }
-      ]
+    {
+      category: 'Generative AI',
+      proficiency: 90,
+      tools: ['OpenAI API', 'Stable Diffusion', 'LangChain', 'DALL-E', 'Claude']
+    },
+    {
+      category: 'MLOps & Infrastructure',
+      proficiency: 88,
+      tools: ['Docker', 'Kubernetes', 'MLflow', 'Airflow', 'Kubeflow']
+    },
+    {
+      category: 'Computer Vision',
+      proficiency: 85,
+      tools: ['OpenCV', 'YOLO', 'ResNet', 'Detectron2', 'Pillow']
+    },
+    {
+      category: 'Cloud & DevOps',
+      proficiency: 87,
+      tools: ['AWS', 'GCP', 'Azure', 'Terraform', 'CI/CD']
+    },
+    {
+      category: 'Full-Stack Development',
+      proficiency: 93,
+      tools: ['React', 'Node.js', 'Python', 'PostgreSQL', 'GraphQL']
+    },
+    {
+      category: 'Data Engineering',
+      proficiency: 89,
+      tools: ['Pandas', 'NumPy', 'Spark', 'Airflow', 'dbt']
     }
-  };
+  ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
+  const rowVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: (i) => ({
       opacity: 1,
-      transition: {
-        duration: 0.8,
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { x: -50, opacity: 0 },
-    visible: {
       x: 0,
-      opacity: 1,
       transition: {
-        duration: 0.6,
+        delay: i * 0.1,
+        duration: 0.5,
         ease: 'easeOut'
-      }
-    }
-  };
-
-  const skillBarVariants = {
-    hidden: { width: 0 },
-    visible: (level) => ({
-      width: `${level}%`,
-      transition: {
-        duration: 1.5,
-        ease: 'easeOut',
-        delay: 0.3
       }
     })
   };
@@ -100,178 +78,92 @@ const SkillsMatrix = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-6xl font-tactical font-black text-light-text-primary dark:text-dark-text-primary mb-4">
-            WARFARE <span className="text-tactical">CAPABILITIES MATRIX</span>
+            AI/AGI <span className="text-tactical">CAPABILITIES MATRIX</span>
           </h2>
           <p className="text-xl text-light-text-secondary dark:text-dark-text-secondary max-w-3xl mx-auto">
-            DoD-caliber proficiency in superintelligent AI systems, defense infrastructure, and strategic warfare operations.
-            <span className="text-light-text-accent dark:text-dark-neon-blue"> Combat-ready technologies deployed with zero-failure precision.</span>
+            Elite-level proficiency across AI/AGI systems, infrastructure automation, and full-stack intelligent deployment.
           </p>
         </motion.div>
 
-        {/* Category Selector */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex flex-wrap justify-center mb-12 space-x-2 space-y-2 md:space-y-0"
-        >
-          {Object.keys(skillCategories).map((category) => (
-            <motion.button
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`px-6 py-3 rounded-lg font-tactical font-semibold tracking-wider transition-all duration-300 ${
-                activeCategory === category
-                  ? 'bg-gradient-to-r from-light-text-accent to-light-metallic-steel dark:from-dark-neon-blue dark:to-dark-neon-purple text-white shadow-lg shadow-light-subtle-blue/30 dark:shadow-dark-glow-blue/30'
-                  : 'bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:border-light-text-accent dark:hover:border-dark-neon-blue'
-              }`}
-            >
-              <span className="mr-2">{skillCategories[category].icon}</span>
-              {skillCategories[category].title}
-            </motion.button>
-          ))}
-        </motion.div>
-
-        {/* Skills Display */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="grid lg:grid-cols-2 gap-12"
-        >
-          {/* Skills List */}
-          <div className="space-y-6">
-            {skillCategories[activeCategory].skills.map((skill, index) => (
-              <motion.div
-                key={`${activeCategory}-${skill.name}`}
-                variants={itemVariants}
-                className="group"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-tactical font-semibold text-light-text-primary dark:text-dark-text-primary tracking-wider">
-                    {skill.name}
-                  </h3>
-                  <span className="font-mono text-sm text-light-text-accent dark:text-dark-neon-blue">
-                    {skill.level}%
+        {/* Capabilities Grid */}
+        <div className="overflow-x-auto">
+          <div className="min-w-full inline-block align-middle">
+            <div className="overflow-hidden border border-light-border dark:border-dark-border rounded-lg">
+              {/* Table Header */}
+              <div className="grid grid-cols-3 bg-light-surface dark:bg-dark-surface border-b border-light-border dark:border-dark-border">
+                <div className="px-6 py-4 text-left">
+                  <span className="text-sm font-tactical font-bold text-light-text-primary dark:text-dark-text-primary tracking-wider">
+                    SYSTEM CATEGORY
                   </span>
                 </div>
-                
-                <div className="skill-bar h-3 mb-2 relative">
+                <div className="px-6 py-4 text-center">
+                  <span className="text-sm font-tactical font-bold text-light-text-primary dark:text-dark-text-primary tracking-wider">
+                    PROFICIENCY
+                  </span>
+                </div>
+                <div className="px-6 py-4 text-left">
+                  <span className="text-sm font-tactical font-bold text-light-text-primary dark:text-dark-text-primary tracking-wider">
+                    TOOL STACK
+                  </span>
+                </div>
+              </div>
+
+              {/* Table Body */}
+              <div className="bg-light-base dark:bg-dark-base divide-y divide-light-border dark:divide-dark-border">
+                {capabilities.map((capability, index) => (
                   <motion.div
-                    className="skill-bar-fill h-full rounded-lg relative overflow-hidden"
-                    variants={skillBarVariants}
-                    custom={skill.level}
+                    key={capability.category}
+                    custom={index}
+                    variants={rowVariants}
                     initial="hidden"
                     animate={isInView ? "visible" : "hidden"}
-                  />
-                  
-                  {/* Glow effect on hover */}
-                  <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-light-text-accent/20 to-light-metallic-steel/20 dark:from-dark-neon-blue/20 dark:to-dark-neon-purple/20" />
-                </div>
-                
-                <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-mono">
-                  {skill.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
+                    className="grid grid-cols-3 hover:bg-light-elevated dark:hover:bg-dark-elevated transition-colors duration-200"
+                  >
+                    {/* Category */}
+                    <div className="px-6 py-4 flex items-center">
+                      <span className="font-tactical font-semibold text-light-text-primary dark:text-dark-text-primary">
+                        {capability.category}
+                      </span>
+                    </div>
 
-          {/* Tactical Display */}
-          <motion.div
-            variants={itemVariants}
-            className="relative"
-          >
-            <div className="card-tactical rounded-xl p-8 h-full">
-              {/* Category Header */}
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 rounded-lg bg-gradient-neon flex items-center justify-center text-2xl mr-4">
-                  {skillCategories[activeCategory].icon}
-                </div>
-                <div>
-                  <h3 className="font-tactical font-bold text-xl text-light-text-primary dark:text-dark-text-primary">
-                    {skillCategories[activeCategory].title}
-                  </h3>
-                  <p className="text-sm font-mono text-light-text-secondary dark:text-dark-text-secondary">
-                    STRIKECELL STATUS: WEAPONS HOT
-                  </p>
-                </div>
-              </div>
+                    {/* Proficiency */}
+                    <div className="px-6 py-4 flex items-center justify-center">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-24 h-2 bg-light-surface dark:bg-dark-surface rounded-full overflow-hidden">
+                          <motion.div
+                            className="h-full bg-gradient-to-r from-light-text-accent to-light-metallic-steel dark:from-dark-neon-blue dark:to-dark-neon-cyan rounded-full"
+                            initial={{ width: 0 }}
+                            animate={isInView ? { width: `${capability.proficiency}%` } : { width: 0 }}
+                            transition={{ duration: 1, delay: index * 0.1 + 0.3 }}
+                          />
+                        </div>
+                        <span className="font-mono text-sm font-bold text-light-text-accent dark:text-dark-neon-blue">
+                          {capability.proficiency}%
+                        </span>
+                      </div>
+                    </div>
 
-              {/* Tactical Readout */}
-              <div className="space-y-4 mb-6">
-                <div className="flex justify-between items-center py-2 border-b border-light-border dark:border-dark-border">
-                  <span className="font-mono text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                    WARFARE PROFICIENCY
-                  </span>
-                  <span className="font-tactical font-bold text-light-text-accent dark:text-dark-neon-blue">
-                    ELITE OPERATOR
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b border-light-border dark:border-dark-border">
-                  <span className="font-mono text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                    COMBAT READINESS
-                  </span>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                    <span className="font-tactical font-bold text-green-500">
-                      BATTLE READY
-                    </span>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center py-2">
-                  <span className="font-mono text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                    THREAT LEVEL
-                  </span>
-                  <span className="font-tactical font-bold text-light-text-accent dark:text-dark-neon-purple">
-                    DEFCON 1
-                  </span>
-                </div>
-              </div>
-
-              {/* Tactical Visualization */}
-              <div className="relative h-32 bg-light-base dark:bg-dark-base rounded-lg p-4 overflow-hidden">
-                <div className="absolute inset-0 tactical-grid opacity-30" />
-                
-                {/* Animated radar sweep */}
-                <motion.div
-                  className="absolute inset-0 rounded-lg"
-                  style={{
-                    background: `conic-gradient(from 0deg, transparent 0deg, rgba(0, 212, 255, 0.3) 45deg, transparent 90deg)`
-                  }}
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-                />
-                
-                {/* Center indicator */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <div className="w-4 h-4 bg-light-text-accent dark:bg-dark-neon-blue rounded-full animate-pulse" />
-                </div>
-                
-                {/* Skill indicators */}
-                {skillCategories[activeCategory].skills.slice(0, 4).map((skill, index) => (
-                  <motion.div
-                    key={skill.name}
-                    className="absolute w-2 h-2 bg-light-text-accent dark:bg-dark-neon-cyan rounded-full"
-                    style={{
-                      top: `${20 + index * 15}%`,
-                      left: `${30 + index * 20}%`
-                    }}
-                    animate={{
-                      scale: [1, 1.5, 1],
-                      opacity: [0.5, 1, 0.5]
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      delay: index * 0.5
-                    }}
-                  />
+                    {/* Tools */}
+                    <div className="px-6 py-4 flex items-center">
+                      <div className="flex flex-wrap gap-2">
+                        {capability.tools.map((tool) => (
+                          <motion.span
+                            key={tool}
+                            whileHover={{ scale: 1.05, y: -2 }}
+                            className="group relative px-3 py-1 text-xs font-mono bg-light-elevated dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-md text-light-text-secondary dark:text-dark-text-secondary hover:border-light-text-accent dark:hover:border-dark-neon-blue hover:text-light-text-accent dark:hover:text-dark-neon-blue transition-all duration-200 cursor-default"
+                            title={tool}
+                          >
+                            {tool}
+                          </motion.span>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* Bottom Stats */}
         <motion.div
@@ -281,10 +173,10 @@ const SkillsMatrix = () => {
           className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6"
         >
           {[
-            { label: 'WARFARE TECHNOLOGIES', value: '25+', icon: '⚙️' },
-            { label: 'AI SYSTEMS DEPLOYED', value: '35+', icon: '🏆' },
-            { label: 'OPERATIONAL YEARS', value: '8+', icon: '📅' },
-            { label: 'MISSION SUCCESS', value: '100%', icon: '🎯' }
+            { label: 'AI/AGI FRAMEWORKS', value: '25+', icon: '⚙️' },
+            { label: 'SYSTEMS DEPLOYED', value: '35+', icon: '🏆' },
+            { label: 'ENTERPRISE CLIENTS', value: '50+', icon: '🏢' },
+            { label: 'UPTIME GUARANTEE', value: '99.9%', icon: '🎯' }
           ].map((stat, index) => (
             <motion.div
               key={stat.label}

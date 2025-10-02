@@ -120,7 +120,7 @@ const HeroModule = () => {
           <div className="flex items-center space-x-3 px-4 py-2 rounded-full bg-light-surface/80 dark:bg-dark-surface/80 backdrop-blur-tactical border border-light-border dark:border-dark-border">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
             <span className="font-mono text-xs text-light-text-secondary dark:text-dark-text-secondary tracking-wider">
-              STRIKECELL OPERATIONAL • SUPERINTELLIGENCE SYSTEMS ACTIVE
+              VERITAS AI LAB OPERATIONAL • COMMAND CENTER ONLINE
             </span>
           </div>
         </motion.div>
@@ -148,19 +148,19 @@ const HeroModule = () => {
         {/* Subtitle */}
         <motion.div variants={itemVariants} className="mb-8">
           <div className="flex flex-col md:flex-row items-center justify-center space-y-2 md:space-y-0 md:space-x-8 text-lg md:text-xl font-tactical tracking-wider">
-            <span className="text-light-text-accent dark:text-dark-neon-blue">AI WARFARE ARCHITECT</span>
+            <span className="text-light-text-accent dark:text-dark-neon-blue">ELITE AI SYSTEMS ARCHITECT</span>
             <div className="hidden md:block w-px h-6 bg-light-border dark:bg-dark-border" />
-            <span className="text-light-text-accent dark:text-dark-neon-purple">NAVAL INTELLIGENCE VETERAN</span>
+            <span className="text-light-text-accent dark:text-dark-neon-purple">ENTERPRISE & GOVERNMENT AI</span>
             <div className="hidden md:block w-px h-6 bg-light-border dark:bg-dark-border" />
-            <span className="text-light-text-accent dark:text-dark-neon-cyan">DEFENSE INFRASTRUCTURE ENGINEER</span>
+            <span className="text-light-text-accent dark:text-dark-neon-cyan">FULL-STACK AGI DEPLOYMENT</span>
           </div>
         </motion.div>
 
         {/* Mission Statement */}
         <motion.div variants={itemVariants} className="mb-12">
           <p className="text-xl md:text-2xl text-light-text-secondary dark:text-dark-text-secondary max-w-4xl mx-auto leading-relaxed">
-            Architecting superintelligent AI systems and defense-grade infrastructure with DoD-caliber precision. 
-            <span className="text-tactical"> Commanding the future of autonomous warfare and strategic AI deployment.</span>
+            Deploying AI/AGI systems with tactical edge across enterprise and government sectors. 
+            <span className="text-tactical"> Command center for infrastructure automation, generative AI, and full-stack intelligent systems.</span>
           </p>
         </motion.div>
 
@@ -171,7 +171,7 @@ const HeroModule = () => {
             whileTap={{ scale: 0.95 }}
             className="btn-tactical px-8 py-4 rounded-lg text-lg font-bold neon-glow"
           >
-            <span className="relative z-10">INITIATE ENGAGEMENT</span>
+            <span className="relative z-10">DEPLOY AI SYSTEMS</span>
           </motion.button>
           
           <motion.button
@@ -179,7 +179,7 @@ const HeroModule = () => {
             whileTap={{ scale: 0.95 }}
             className="px-8 py-4 rounded-lg text-lg font-tactical font-semibold tracking-wider border-2 border-light-text-accent dark:border-dark-neon-blue text-light-text-accent dark:text-dark-neon-blue hover:bg-light-text-accent/10 dark:hover:bg-dark-neon-blue/10 transition-all duration-300"
           >
-            ACCESS COMMAND CENTER
+            ENTER COMMAND CENTER
           </motion.button>
         </motion.div>
 
@@ -189,10 +189,10 @@ const HeroModule = () => {
           className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
         >
           {[
-            { label: 'AI SYSTEMS DEPLOYED', value: '35+', color: 'text-dark-neon-blue' },
-            { label: 'OPERATIONAL YEARS', value: '8+', color: 'text-dark-neon-purple' },
-            { label: 'WARFARE TECHNOLOGIES', value: '25+', color: 'text-dark-neon-cyan' },
-            { label: 'MISSION SUCCESS RATE', value: '100%', color: 'text-dark-neon-pink' }
+            { label: 'AI/AGI SYSTEMS DEPLOYED', value: '35+', color: 'text-dark-neon-blue' },
+            { label: 'ENTERPRISE INTEGRATIONS', value: '50+', color: 'text-dark-neon-purple' },
+            { label: 'AUTOMATION FRAMEWORKS', value: '25+', color: 'text-dark-neon-cyan' },
+            { label: 'INFRASTRUCTURE UPTIME', value: '99.9%', color: 'text-dark-neon-pink' }
           ].map((stat, index) => (
             <motion.div
               key={stat.label}
@@ -231,7 +231,7 @@ const HeroModule = () => {
           className="flex flex-col items-center space-y-2"
         >
           <span className="text-xs font-mono text-light-text-secondary dark:text-dark-text-secondary tracking-wider">
-            PROCEED TO INTELLIGENCE BRIEFING
+            PROCEED TO SYSTEMS OVERVIEW
           </span>
           <div className="w-6 h-10 border-2 border-light-text-accent dark:border-dark-neon-blue rounded-full flex justify-center">
             <motion.div
